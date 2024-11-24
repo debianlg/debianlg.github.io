@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGWARE.LUA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background: black;
+        }
+
+        :root {
+            --primary: #00ff88;
+            --dark: #000000;
+            --light: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            position: relative;
+            width: 600px;
+            height: 450px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transform-style: preserve-3d;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            padding: 30px;
+            text-align: center;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: 0.5s;
+        }
+
+        .card.show .content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .logo {
+            position: absolute;
+            top: -60px;
+            right: 30px;
+            font-size: 8em;
+            color: rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+            transform: translateZ(50px);
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.7);
+            margin-bottom: 20px;
+            transform: translateZ(50px);
+        }
+
+        .description {
+            color: var(--light);
+            font-size: 1.1em;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            transform: translateZ(30px);
+        }
+
+        .highlight {
+            color: var(--primary);
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            transform: translateZ(30px);
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: var(--dark);
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+            transform: translateZ(40px);
+            transition: 0.5s;
+        }
+
+        .button:hover {
+            background: #00cc6f;
+            transform: translateZ(45px);
+        }
+
+        .tilt-image {
+            width: 600px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="Matrix"></canvas>
+    <div class="card">
+        <div class="content">
+            <div class="logo">SG</div>
+            <h2 class="title">SGWARE.LUA</h2>
+            <p class="description">
+                Premium scripts made for excellence. 
+                Best Scripting Experience For Roblox Games.
+            </p>
+            <p class="highlight">BEST SCRIPTING UTILITY FOR RF24</p>
+            <a href="#needtoembedthesellixthing" class="button">Purchase</a>
+        </div>
+    </div>
+
+    <img src="public/gameplay.png" alt="Gameplay" class="tilt-image">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector(".card").classList.add("show");
+        });
+
+        VanillaTilt.init(document.querySelector(".card"), {
+            max: 25,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.5,
+            scale: 1.05
+        });
+
+        VanillaTilt.init(document.querySelector(".tilt-image"), {
+            max: 25,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.5,
+            scale: 1.05
+        });
+
+        const canvas = document.getElementById('Matrix');
+        const context = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = [];
+
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            context.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            context.fillStyle = '#0F0';
+            context.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                context.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 30);
+    </script>
+</body>
+</html>
