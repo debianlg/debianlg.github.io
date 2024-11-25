@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SGWARE</title>
+    <!-- Include Ubuntu font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #252525;
+            --topbar-color: #343434;
+            --tab-color: #3a3a3a;
+            --tab-hover-color: #4a4a4a;
+            --button-color: #353535;
+            --button-hover-color: #454545;
+            --text-color: #f0f0f0;
+            --slider-thumb-color: #ffffff;
+            --slider-track-color: #444444;
+            --toggle-background: #555;
+            --toggle-knob: #fff;
+        }
+
+        /* Add the aqua theme variables */
+        body[data-theme='aqua'] {
+            --background-color: #e0ffff;
+            --topbar-color: #afeeee;
+            --tab-color: #40e0d0;
+            --tab-hover-color: #48d1cc;
+            --button-color: #20b2aa;
+            --button-hover-color: #008b8b;
+            --text-color: #000000;
+            --slider-thumb-color: #20b2aa;
+            --slider-track-color: #afeeee;
+            --toggle-background: #20b2aa;
+            --toggle-knob: #fff;
+        }
+
+        /* Update rose theme */
+        body[data-theme='rose'] {
+            --background-color: #ffc0cb;
+            --topbar-color: #ff69b4;
+            --tab-color: #ff1493;
+            --tab-hover-color: #db7093;
+            --button-color: #ff1493;
+            --button-hover-color: #c71585;
+            --text-color: #000000;
+            --slider-thumb-color: #ff69b4;
+            --slider-track-color: #ffb6c1;
+            --toggle-background: #ff69b4;
+            --toggle-knob: #fff;
+        }
+
+        /* Remove amethyst theme by not defining it */
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .window {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 400px;
+            display: flex;
+            background-color: var(--background-color);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .window:active {
+            cursor: grabbing;
+        }
+
+        .sidebar {
+            background-color: var(--topbar-color);
+            padding: 20px;
+            border-right: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 10px;
+            background-color: var(--tab-color);
+            border: 1px solid #555;
+            user-select: none;
+            color: var(--text-color);
+        }
+
+        .tab:hover {
+            background-color: var(--tab-hover-color);
+        }
+
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .button, a.button {
+            background-color: var(--button-color);
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button:hover, a.button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .slider {
+            margin: 10px 0;
+        }
+
+        .slider label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            margin-bottom: 5px;
+        }
+
+        .slider input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            background: var(--slider-track-color);
+            height: 5px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--slider-thumb-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider input[type="range"]::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: var(--slider-thumb-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Toggle switch styles */
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-toggle {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-background);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider-toggle:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--toggle-knob);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-toggle {
+            background-color: var(--button-hover-color);
+        }
+
+        input:checked + .slider-toggle:before {
+            transform: translateX(20px);
+        }
+
+        .theme-selector {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .theme-selector select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: var(--button-color);
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .top-right-text {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 18px;
+            user-select: none;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="window" id="draggable-window">
+        <div class="sidebar">
+            <div class="tab" onclick="showTab('main')">Main</div>
+            <div class="tab" onclick="showTab('misc')">Misc</div>
+            <div class="tab" onclick="showTab('purchase')">Purchase</div>
+        </div>
+        <div class="content" id="main">
+            <div class="top-right-text">SGWARE.LUA</div>
+            <div class="section">
+                <h3>Main</h3>
+                <div class="slider">
+                    <label for="reachSize">Reach Size <span id="reachSizeValue">2</span></label>
+                    <input type="range" id="reachSize" min="2" max="20" step="0.1" value="2" oninput="updateReachSize(this.value)">
+                </div>
+                <div class="toggle-container">
+                    <span>Reach Toggle</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="reachToggle">
+                        <span class="slider-toggle"></span>
+                    </label>
+                </div>
+                <div class="slider">
+                    <label for="headReachSize">Head Reach Size <span id="headReachSizeValue">2</span></label>
+                    <input type="range" id="headReachSize" min="2" max="20" step="0.1" value="2" oninput="updateHeadReachSize(this.value)">
+                </div>
+                <div class="toggle-container">
+                    <span>Head Reach Toggle</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="headReachToggle">
+                        <span class="slider-toggle"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="theme-selector">
+                <label for="theme">Select Theme:</label>
+                <select id="theme" onchange="changeTheme(this.value)">
+                    <option value="dark">Dark</option>
+                    <option value="darker">Darker</option>
+                    <option value="rose">Rose</option>
+                    <option value="aqua">Aqua</option>
+                </select>
+            </div>
+        </div>
+        <div class="content" id="misc" style="display: none;">
+            <div class="top-right-text">SGWARE.LUA</div>
+            <div class="section">
+                <h3>Misc</h3>
+                <div class="toggle-container">
+                    <div>
+                        <span>Infinite Stamina</span><br>
+                        <small>Gives you infinite stamina</small>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="infStaminaToggle">
+                        <span class="slider-toggle"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="theme-selector">
+                <label for="theme2">Select Theme:</label>
+                <select id="theme2" onchange="changeTheme(this.value)">
+                    <option value="dark">Dark</option>
+                    <option value="darker">Darker</option>
+                    <option value="rose">Rose</option>
+                    <option value="aqua">Aqua</option>
+                </select>
+            </div>
+        </div>
+        <div class="content" id="purchase" style="display: none;">
+            <div class="top-right-text">SGWARE.LUA</div>
+            <div class="section">
+                <h3>Purchase</h3>
+                <a href="https://discord.com/invite/5Y4JCAhcVG" class="button">Purchase SGWARE.LUA</a>
+            </div>
+            <div class="theme-selector">
+                <label for="theme3">Select Theme:</label>
+                <select id="theme3" onchange="changeTheme(this.value)">
+                    <option value="dark">Dark</option>
+                    <option value="darker">Darker</option>
+                    <option value="rose">Rose</option>
+                    <option value="aqua">Aqua</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.getElementById('main').style.display = 'none';
+            document.getElementById('misc').style.display = 'none';
+            document.getElementById('purchase').style.display = 'none';
+            document.getElementById(tabId).style.display = 'block';
+        }
+
+        function updateReachSize(value) {
+            document.getElementById('reachSizeValue').innerText = value;
+        }
+
+        function updateHeadReachSize(value) {
+            document.getElementById('headReachSizeValue').innerText = value;
+        }
+
+        function changeTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            // Update all theme selectors
+            document.querySelectorAll('select[id^="theme"]').forEach(select => {
+                select.value = theme;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            changeTheme('dark');
+            makeDraggable(document.getElementById('draggable-window'));
+        });
+
+        function makeDraggable(element) {
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            element.addEventListener('mousedown', (e) => {
+                const target = e.target;
+                if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.classList.contains('button') || target.closest('.toggle-switch')) {
+                    return;
+                }
+                isDragging = true;
+                offsetX = e.clientX - element.offsetLeft;
+                offsetY = e.clientY - element.offsetTop;
+                document.body.style.cursor = 'grabbing';
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    element.style.left = `${e.clientX - offsetX}px`;
+                    element.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    document.body.style.cursor = 'default';
+                    document.body.style.userSelect = 'auto';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
