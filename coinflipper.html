@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SGWARE.LUA Flip a Coin</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #coin {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.6s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        #coin .side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 10px solid gold;
+            box-sizing: border-box;
+        }
+        #heads {
+            background-color: goldenrod;
+            transform: rotateY(0deg);
+        }
+        #tails {
+            background-color: darkgoldenrod;
+            transform: rotateY(180deg);
+        }
+        #coin.flipping {
+            animation: flip 0.6s linear;
+        }
+        .coin-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            text-align: center;
+        }
+        .side-text {
+            font-size: 18px;
+            color: white;
+            text-align: center;
+        }
+        @keyframes flip {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(720deg); }
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="coin">
+            <div id="heads" class="side">
+                <div>
+                    <div class="coin-text">Flip a Coin</div>
+                    <div class="side-text">HEADS</div>
+                </div>
+            </div>
+            <div id="tails" class="side">
+                <div>
+                    <div class="coin-text">Flip a Coin</div>
+                    <div class="side-text">TAILS</div>
+                </div>
+            </div>
+        </div>
+        <div id="result">Flip a coin.</div>
+    </div>
+
+    <script>
+        const coin = document.getElementById('coin');
+        const result = document.getElementById('result');
+        let nextOutcome = null;
+
+        function flipCoin() {
+            if (!coin.classList.contains('flipping')) {
+                coin.classList.add('flipping');
+                
+                setTimeout(() => {
+                    coin.classList.remove('flipping');
+                    
+                    const isHeads = nextOutcome !== null 
+                        ? nextOutcome 
+                        : Math.random() < 0.5;
+                    
+                    coin.style.transform = isHeads 
+                        ? 'rotateY(0deg)' 
+                        : 'rotateY(180deg)';
+                    
+                    result.textContent = isHeads ? 'Heads!' : 'Tails!';
+                    
+                    nextOutcome = null;
+                }, 600);
+            }
+        }
+
+        coin.addEventListener('click', flipCoin);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key.toLowerCase() === 'h') {
+                nextOutcome = true;
+                result.textContent = 'Ready to flip Heads!';
+            } else if (event.key.toLowerCase() === 't') {
+                nextOutcome = false;
+                result.textContent = 'Ready to flip Tails!';
+            }
+        });
+    </script>
+</body>
+</html>
