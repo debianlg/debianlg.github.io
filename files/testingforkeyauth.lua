@@ -25,12 +25,12 @@ local function main(script_key)
             Body = payload
         })
 
-        print(response.StatusCode, response.Body)
+        print("responded")
     end
 
     local function initializeSession()
         local sessionReq = game:HttpGet('https://keyauth.win/api/1.2/?type=init&name=SGWARE.LUA&ownerid=BSzFLdc5kA')
-        print("Session Request: ", sessionReq)
+        print("responded")
         local success, sessionData = pcall(function()
             return HttpService:JSONDecode(sessionReq)
         end)
@@ -55,7 +55,7 @@ local function main(script_key)
 
     local hwid = game:GetService("RbxAnalyticsService"):GetClientId()
     local req = game:HttpGet('https://keyauth.win/api/1.2/?type=license&key=' .. script_key .. '&sessionid=' .. sessionid .. '&name=SGWARE.LUA&ownerid=BSzFLdc5kA&hwid=' .. hwid)
-    print("License Request: ", req)
+    print("responded")
     local success, data = pcall(function()
         return HttpService:JSONDecode(req)
     end)
